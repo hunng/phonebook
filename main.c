@@ -8,6 +8,8 @@
 
 #ifdef OPT
 #define OUT_FILE "opt.txt"
+#elif defined(HAS)
+#define OUT_FILE "hash.txt"
 #else
 #define OUT_FILE "orig.txt"
 #endif
@@ -42,7 +44,11 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    /* build the entry */
+    /* build the entry or hashtable */
+#if defined(HAS)
+    table *t;
+    t = (table *) malloc(sizeof(table));
+#endif
     entry *pHead, *e;
     pHead = (entry *) malloc(sizeof(entry));
     printf("size of entry : %lu bytes\n", sizeof(entry));
@@ -52,6 +58,8 @@ int main(int argc, char *argv[])
 #if defined(__GNUC__)
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
 #endif
+
+
     clock_gettime(CLOCK_REALTIME, &start);
     while (fgets(line, sizeof(line), fp)) {
         while (line[i] != '\0')
@@ -61,28 +69,47 @@ int main(int argc, char *argv[])
         e = append(line, e);
     }
     clock_gettime(CLOCK_REALTIME, &end);
+
+#if defined(HAS)
+    clock_gettime(CLOCK_REALTIME, &start);
+    while (fgets(line, sizeof(line), fp)) {
+        while (line[i] != '\0')
+            i++;
+        line[i - 1] = '\0';
+        i = 0;
+        append(line, t);
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+#endif
+
+
+
     cpu_time1 = diff_in_second(start, end);
 
     /* close file as soon as possible */
     fclose(fp);
 
-    e = pHead;
-
     /* the givn last name to find */
-    char input[MAX_LAST_NAME_SIZE] = "zyxel";
+    char input[MAX_LAST_NAME_SIZE] = "zyxel"; /* zyxel before */
+
+
+    /* compute the execution time */
     e = pHead;
-
-    assert(findName(input, e) &&
-           "Did you implement findName() in " IMPL "?");
-    assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
-
 #if defined(__GNUC__)
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
 #endif
-    /* compute the execution time */
+
+
     clock_gettime(CLOCK_REALTIME, &start);
     findName(input, e);
     clock_gettime(CLOCK_REALTIME, &end);
+
+#ifdef HAS
+    clock_gettime(CLOCK_REALTIME, &start);
+    hashfindName(input, t);
+    clock_gettime(CLOCK_REALTIME, &end);
+#endif
+
     cpu_time2 = diff_in_second(start, end);
 
     FILE *output = fopen(OUT_FILE, "a");
@@ -94,6 +121,10 @@ int main(int argc, char *argv[])
 
     if (pHead->pNext) free(pHead->pNext);
     free(pHead);
+#ifdef HAS
+    free(t);
+#endif
+
 
     return 0;
 }
