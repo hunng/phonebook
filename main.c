@@ -10,6 +10,8 @@
 #define OUT_FILE "opt.txt"
 #elif defined(HAS)
 #define OUT_FILE "hash.txt"
+#elif defined(BST)
+#define OUT_FILE "bst.txt"
 #else
 #define OUT_FILE "orig.txt"
 #endif
@@ -44,10 +46,12 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    /* build the entry or hashtable */
+    /* build the entry or hashtable or bst root node*/
 #if defined(HAS)
     table *t;
     t = (table *) malloc(sizeof(table));
+#elif defined(BST)
+    node *n = (node *) malloc(sizeof(node));
 #else
     /* build the entry */
     entry *pHead, *e;
@@ -59,7 +63,7 @@ int main(int argc, char *argv[])
 
 
 
-
+    /* append() test */
 #if defined(HAS)
     clock_gettime(CLOCK_REALTIME, &start);
     while (fgets(line, sizeof(line), fp)) {
@@ -68,6 +72,16 @@ int main(int argc, char *argv[])
         line[i - 1] = '\0';
         i = 0;
         append(line, t);
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+#elif defined(BST)
+    clock_gettime(CLOCK_REALTIME, &start);
+    while (fgets(line, sizeof(line), fp)) {
+        while (line[i] != '\0')
+            i++;
+        line[i - 1] = '\0';
+        i = 0;
+        append(line, n);
     }
     clock_gettime(CLOCK_REALTIME, &end);
 #else
@@ -94,7 +108,6 @@ int main(int argc, char *argv[])
     /* close file as soon as possible */
     fclose(fp);
 
-
     /* the givn last name to find */
     char input[MAX_LAST_NAME_SIZE] = "zyxel";
 
@@ -102,6 +115,10 @@ int main(int argc, char *argv[])
 #ifdef HAS
     clock_gettime(CLOCK_REALTIME, &start);
     hashfindName(input, t);
+    clock_gettime(CLOCK_REALTIME, &end);
+#elif defined(BST)
+    clock_gettime(CLOCK_REALTIME, &start);
+    bstfindName(input, n);
     clock_gettime(CLOCK_REALTIME, &end);
 #else
     e = pHead;
@@ -130,6 +147,8 @@ int main(int argc, char *argv[])
 
 #ifdef HAS
     free(t);
+#elif defined(BST)
+    free(n);
 #else
     if (pHead->pNext)
         free(pHead->pNext);
