@@ -2,7 +2,7 @@
 #define _PHONEBOOK_H
 
 #define MAX_LAST_NAME_SIZE 16
-#define TABLE_SIZE 262144
+#define TABLE_SIZE 256
 
 #define HAS 1
 
@@ -29,7 +29,7 @@ typedef struct __PHONE_BOOK_ENTRY {
 
 
 typedef struct __HASH_TABLE {
-    entry *store[TABLE_SIZE];
+    entry *store[TABLE_SIZE][2];
 } table;
 
 entry *hashfindName(char lastName[], table *tabb);

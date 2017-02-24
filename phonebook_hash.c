@@ -4,11 +4,11 @@
 #include <ctype.h>
 
 #include "phonebook_hash.h"
-/* use a entry to avoid every call function need to create an entry */
+
 entry *hashfindName(char fName[], table *tabb)
 {
     unsigned int key = hashit(fName);
-    entry *tmp = tabb->store[key];
+    entry *tmp = tabb->store[key][0];
 
     while (tmp != NULL) {
         if (strcasecmp(fName, tmp->lastName) == 0)
@@ -22,17 +22,20 @@ entry *hashfindName(char fName[], table *tabb)
 void append(char newName[], table *tabb)
 {
     unsigned int key = hashit(newName);
-    entry *tmp = tabb->store[key];
+    entry *tmp = tabb->store[key][0];
     if (tmp == NULL) {
-        tmp = tabb->store[key] = (entry *) malloc(sizeof(entry));
+        /* the key didnt store anything */
+        tmp = tabb->store[key][0] = (entry *) malloc(sizeof(entry));
         strcpy(tmp->lastName, newName);
         tmp->pNext = NULL;
+        /* first entry is the last entry now */
+        tabb->store[key][1] = tabb->store[key][0];
     } else {
-        while( tmp->pNext != NULL)
-            tmp = tmp->pNext;
-        tmp = tmp->pNext = (entry *) malloc(sizeof(entry));
+        /* the key have store something, append new key from last entry */
+        tmp = tabb->store[key][1]->pNext = (entry *) malloc(sizeof(entry));
         strcpy(tmp->lastName, newName);
         tmp->pNext = NULL;
+        tabb->store[key][1] = tmp;
     }
 }
 
