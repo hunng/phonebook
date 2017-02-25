@@ -50,7 +50,6 @@ cache-test: $(EXEC)
 		-e cache-misses,cache-references,instructions,cycles \
 		./phonebook_hash
 
-
 output.txt: cache-test calculate
 	./calculate
 

@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 #if defined(HAS)
     table *t;
     t = (table *) malloc(sizeof(table));
+    printf("size of table : %lu bytes\n", sizeof(table));
 #else
     /* build the entry */
     entry *pHead, *e;

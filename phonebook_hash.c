@@ -8,7 +8,9 @@
 entry *hashfindName(char fName[], table *tabb)
 {
     unsigned int key = hashit(fName);
-    entry *tmp = tabb->store[key][0];
+
+    /* find from the first entry */
+    entry *tmp = tabb->store[key][FIRST];
 
     while (tmp != NULL) {
         if (strcasecmp(fName, tmp->lastName) == 0)
@@ -22,20 +24,23 @@ entry *hashfindName(char fName[], table *tabb)
 void append(char newName[], table *tabb)
 {
     unsigned int key = hashit(newName);
-    entry *tmp = tabb->store[key][0];
+    /* check whether it has the first entry */
+    entry *tmp = tabb->store[key][FIRST];
     if (tmp == NULL) {
         /* the key didnt store anything */
-        tmp = tabb->store[key][0] = (entry *) malloc(sizeof(entry));
+        tmp = tabb->store[key][FIRST] = (entry *) malloc(sizeof(entry));
         strcpy(tmp->lastName, newName);
         tmp->pNext = NULL;
+
         /* first entry is the last entry now */
-        tabb->store[key][1] = tabb->store[key][0];
+        tabb->store[key][LAST] = tabb->store[key][FIRST];
     } else {
         /* the key have store something, append new key from last entry */
-        tmp = tabb->store[key][1]->pNext = (entry *) malloc(sizeof(entry));
+        tmp = tabb->store[key][LAST]->pNext = (entry *) malloc(sizeof(entry));
         strcpy(tmp->lastName, newName);
         tmp->pNext = NULL;
-        tabb->store[key][1] = tmp;
+        /* update the last entry */
+        tabb->store[key][LAST] = tmp;
     }
 }
 

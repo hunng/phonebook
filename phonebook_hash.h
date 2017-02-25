@@ -27,6 +27,10 @@ typedef struct __PHONE_BOOK_ENTRY {
     struct __PHONE_BOOK_ENTRY *pNext;
 } entry;
 
+enum entryStore {
+    FIRST,
+    LAST
+};
 
 typedef struct __HASH_TABLE {
     entry *store[TABLE_SIZE][2];
