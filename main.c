@@ -10,8 +10,8 @@
 #define OUT_FILE "opt.txt"
 #elif defined(HAS)
 #define OUT_FILE "hash.txt"
-#elif defined(BST)
-#define OUT_FILE "bst.txt"
+#elif defined(TRI)
+#define OUT_FILE "trie.txt"
 #else
 #define OUT_FILE "orig.txt"
 #endif
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 #if defined(HAS)
     table *t;
     t = (table *) malloc(sizeof(table));
-#elif defined(BST)
+#elif defined(TRI)
     node *n = (node *) malloc(sizeof(node));
 #else
     /* build the entry */
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
         append(line, t);
     }
     clock_gettime(CLOCK_REALTIME, &end);
-#elif defined(BST)
+#elif defined(TRI)
     clock_gettime(CLOCK_REALTIME, &start);
     while (fgets(line, sizeof(line), fp)) {
         while (line[i] != '\0')
@@ -116,9 +116,9 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_REALTIME, &start);
     hashfindName(input, t);
     clock_gettime(CLOCK_REALTIME, &end);
-#elif defined(BST)
+#elif defined(TRI)
     clock_gettime(CLOCK_REALTIME, &start);
-    bstfindName(input, n);
+    triefindName(input, n);
     clock_gettime(CLOCK_REALTIME, &end);
 #else
     e = pHead;
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 
 #ifdef HAS
     free(t);
-#elif defined(BST)
+#elif defined(TRI)
     free(n);
 #else
     if (pHead->pNext)

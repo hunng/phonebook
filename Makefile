@@ -3,9 +3,9 @@ CFLAGS_common ?= -Wall -std=gnu99
 CFLAGS_orig = -O0
 CFLAGS_opt  = -O0
 CFLAGS_hash = -O0
-CFLAGS_bst  = -O0
+CFLAGS_trie  = -O0
 
-EXEC = phonebook_orig phonebook_opt phonebook_hash
+EXEC = phonebook_orig phonebook_opt phonebook_hash phonebook_trie
 
 GIT_HOOKS := .git/hooks/pre-commit
 .PHONY: all
@@ -32,8 +32,8 @@ phonebook_hash: $(SRCS_common) phonebook_hash.c phonebook_hash.h
 		-DIMPL="\"$@.h\"" -o $@ \
 		$(SRCS_common) $@.c
 
-phonebook_bst: $(SRCS_common) phonebook_bst.c phonebook_bst.h
-	$(CC) $(CFLAGS_common) $(CFLAGS_bst) \
+phonebook_trie: $(SRCS_common) phonebook_trie.c phonebook_trie.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_trie) \
 		-DIMPL="\"$@.h\"" -o $@ \
 		$(SRCS_common) $@.c
 
@@ -46,7 +46,7 @@ cache-test: $(EXEC)
 	rm orig.txt; \
 	rm opt.txt; \
 	rm hash.txt; \
-	rm bst.txt; \
+	rm trie.txt; \
 	perf stat --repeat 100 \
 		-e cache-misses,cache-references,instructions,cycles \
 		./phonebook_orig
@@ -58,7 +58,7 @@ cache-test: $(EXEC)
 		./phonebook_hash
 	perf stat --repeat 100 \
 		-e cache-misses,cache-references,instructions,cycles \
-		./phonebook_bst
+		./phonebook_trie
 
 output.txt: cache-test calculate
 	./calculate

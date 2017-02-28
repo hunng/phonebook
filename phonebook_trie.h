@@ -4,7 +4,7 @@
 #define MAX_LAST_NAME_SIZE 16
 #define TABLE_SIZE 256
 
-#define BST 1
+#define TRI 1
 
 /* use the opt version of struct */
 typedef struct __PHONE_BOOK_ENTRY_DETAIL {
@@ -28,13 +28,13 @@ typedef struct __PHONE_BOOK_ENTRY {
 } entry;
 
 /* binary search tree node */
-typedef struct __BINARY_SEARCH_NODE {
+typedef struct __TRIE_NODE {
     /* if needed more information add a entry_detail */
     char str[MAX_LAST_NAME_SIZE];
-    struct __BINARY_SEARCH_NODE *pLeft[2], *pRight;
+    struct __TRIE_NODE *pLeft[2], *pRight;
 } node;
 
-node *bstfindName(char fName[], node *troot);
+node *triefindName(char fName[], node *troot);
 void append(char aName[], node *troot);
 
 #endif

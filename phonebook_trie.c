@@ -3,9 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "phonebook_bst.h"
+#include "phonebook_trie.h"
 
-node *bstfindName(char fName[], node *troot)
+node *triefindName(char fName[], node *troot)
 {
     if (fName[0] - troot->str[0] == 0) { /* first letter same */
         node *tmp = troot->pLeft[0];
@@ -16,7 +16,7 @@ node *bstfindName(char fName[], node *troot)
         }
         return NULL;
     } else
-        return bstfindName(fName, troot->pRight);
+        return triefindName(fName, troot->pRight);
 }
 
 void append(char aName[], node *troot)
